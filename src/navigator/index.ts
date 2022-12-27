@@ -1,13 +1,16 @@
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Category } from "../store/slices/categories";
 
 export type RootDrawerParamList = {
   Dashboard: {} | undefined;
   Categories: {} | undefined;
 };
 
-export type CategoriesStackParamList = {
+export type RootStackParamList = {
   CategoryList: {} | undefined;
   AddCategory: {} | undefined;
+  DrawerNavigator: {} | undefined;
+  DynamicItemAdd: Category | undefined;
 };
 
 // Dashboard Screen Types
@@ -18,10 +21,14 @@ export type DashboardProps = NativeStackScreenProps<
 
 // Category Screen Types
 export type CategoryListProps = NativeStackScreenProps<
-  CategoriesStackParamList,
+  RootStackParamList,
   "CategoryList"
 >;
 export type AddCategoryProps = NativeStackScreenProps<
-  CategoriesStackParamList,
+  RootStackParamList,
   "AddCategory"
+>;
+export type DynamicItemAddProps = NativeStackScreenProps<
+  RootStackParamList,
+  "DynamicItemAdd"
 >;

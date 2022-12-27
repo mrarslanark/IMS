@@ -4,10 +4,11 @@ import { IconButton, List, TextInput } from "react-native-paper";
 
 export type CategoryFieldType = {
   id: string;
-  type: number | string | boolean | Date;
+  type: string;
   name: string;
   label: string;
   icon: string;
+  value?: string | boolean | undefined;
 };
 
 type FieldItemType = {
@@ -41,7 +42,7 @@ const CategoryFieldList: React.FC<CategoryFieldListProps> = ({
   handleFieldDetailsUpdate,
 }) => {
   const [expanded, setExpanded] = useState(false);
-  const [type, setType] = useState<number | string | boolean | Date>(item.type);
+  const [type, setType] = useState<string>(item.type);
   const [icon, setIcon] = useState<string>(item.icon);
   const [label, setLabel] = useState<string>(item.label);
   const [fieldName, setFieldName] = useState<string>("");
@@ -73,6 +74,7 @@ const CategoryFieldList: React.FC<CategoryFieldListProps> = ({
       label: selectedItem.title,
       name: fieldName,
       type: selectedItem.value,
+      value: selectedItem.value === "boolean" ? false : undefined,
     });
   }
 

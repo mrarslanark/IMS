@@ -6,6 +6,7 @@ import Routes from "../../constants/routes";
 import { CategoryListProps } from "../../navigator";
 import { AppDispatch, RootState } from "../../store";
 import { Category, deleteACategory } from "../../store/slices/categories";
+import { deleteAllCategoryItems } from "../../store/slices/data";
 import styles from "./styles";
 
 const CategoryList: React.FC<CategoryListProps> = ({ navigation }) => {
@@ -62,12 +63,13 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
 
   function handleCategoryDelete() {
     dispatch(deleteACategory(item.id));
+    dispatch(deleteAllCategoryItems(item.id));
   }
 
   function showAlert() {
     Alert.alert(
       "Delete Category",
-      `Are you sure you want to delete the ${item.title} category? You won\'t be able to retrieve its fields`,
+      `Are you sure you want to delete the ${item.title} category? You won\'t be able to retrieve its fields and all concerning data will be deleted`,
       [
         { text: "Cancel" },
         { text: "Delete", onPress: handleCategoryDelete, style: "destructive" },

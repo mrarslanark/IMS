@@ -3,6 +3,8 @@ enum Routes {
   Categories = "Categories",
   CategoryList = "CategoryList",
   AddCategory = "AddCategory",
+  DynamicItemAdd = "DynamicItemAdd",
+  DrawerNavigator = "DrawerNavigator",
 }
 
 export default Routes;
