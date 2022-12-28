@@ -37,12 +37,17 @@ import { AppDispatch } from "../../store";
 
 type CategoryFormType = {
   title: string;
+  selectedTitle: {
+    id: string;
+    value: string;
+  };
 };
 
 const initialCategoryField: CategoryFieldType = {
   id: nanoid(),
   name: "",
   type: "text",
+  value: "",
 };
 
 const AddCategory: React.FC<AddCategoryProps> = ({ navigation, route }) => {
@@ -82,15 +87,33 @@ const AddCategory: React.FC<AddCategoryProps> = ({ navigation, route }) => {
       return;
     }
 
+    if (values.selectedTitle.value.length === 0) {
+      Alert.alert(
+        "Select a Title",
+        "Kindly, select a field as title before proceeding"
+      );
+      return;
+    }
+
     if (!params) {
       return;
     }
 
     if (params?.action === "add") {
+      const fieldsWithUniqueIds = fields.map((item) => {
+        return {
+          ...item,
+          id: nanoid(),
+        };
+      });
       const model: Category = {
         id: nanoid(),
         title: values.title.trim(),
-        fields,
+        selectedTitle: {
+          value: values.selectedTitle.value.trim(),
+          id: values.selectedTitle.id,
+        },
+        fields: fieldsWithUniqueIds,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -99,7 +122,11 @@ const AddCategory: React.FC<AddCategoryProps> = ({ navigation, route }) => {
       const model: Category = {
         id: params.id ?? "",
         title: values.title.trim(),
-        fields,
+        selectedTitle: {
+          value: values.selectedTitle.value.trim(),
+          id: values.selectedTitle.id,
+        },
+        fields: fields,
         updatedAt: new Date().toISOString(),
       };
       dispatch(updateACategory(model));
@@ -139,10 +166,14 @@ const AddCategory: React.FC<AddCategoryProps> = ({ navigation, route }) => {
 
   const initialValues: CategoryFormType = {
     title: params?.title ?? "",
+    selectedTitle: {
+      id: params?.selectedTitle?.id ?? "",
+      value: params?.selectedTitle?.value ?? "",
+    },
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.safeAreView}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={styles.container}>
           <Formik
@@ -151,7 +182,13 @@ const AddCategory: React.FC<AddCategoryProps> = ({ navigation, route }) => {
             validateOnChange={false}
             validationSchema={CategoryFormValidation}
           >
-            {({ handleChange, handleSubmit, values, errors }) => (
+            {({
+              handleChange,
+              handleSubmit,
+              values,
+              errors,
+              setFieldValue,
+            }) => (
               <>
                 <View>
                   <TextInput
@@ -220,30 +257,15 @@ const AddCategory: React.FC<AddCategoryProps> = ({ navigation, route }) => {
                   </View>
                 </List.Accordion> */}
 
-                <View
-                  style={{
-                    marginBottom: 12,
-                    marginHorizontal: 6,
-                    justifyContent: "center",
-                    alignContent: "center",
-                    alignItems: "center",
-                    flexDirection: "row",
-                  }}
-                >
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ fontSize: 24, fontWeight: "bold" }}>
-                      Attributes
-                    </Text>
-                    <Text style={{ fontSize: 12 }}>
+                <View style={styles.attributeInfoContainer}>
+                  <View style={styles.attributeInfoTextContainer}>
+                    <Text style={styles.attributeLabel}>Attributes</Text>
+                    <Text style={styles.attributeDescription}>
                       Attributes of a category allow you to structure data.
                       Press the add icon to add more attributes.
                     </Text>
                   </View>
-                  <Divider
-                    style={{
-                      backgroundColor: "transparent",
-                    }}
-                  />
+                  <Divider style={styles.divider} />
                   <IconButton
                     icon="plus-thick"
                     iconColor={"black"}
@@ -251,94 +273,60 @@ const AddCategory: React.FC<AddCategoryProps> = ({ navigation, route }) => {
                     mode={"contained-tonal"}
                     animated={true}
                     onPress={handleAddField}
-                    style={{ borderRadius: 12 }}
+                    style={styles.attributeAddButton}
                   />
                 </View>
 
                 <KeyboardAwareFlatList
                   ref={flatListRef}
                   keyExtractor={(item) => item.id}
-                  contentContainerStyle={{ flexGrow: 1 }}
-                  style={{ marginBottom: 16 }}
+                  contentContainerStyle={styles.attributeListContentContainer}
+                  style={styles.attributeListContainer}
                   showsVerticalScrollIndicator={false}
                   data={fields}
                   ItemSeparatorComponent={() => {
-                    return (
-                      <Divider
-                        style={{
-                          marginVertical: 6,
-                          backgroundColor: "transparent",
-                        }}
-                      />
-                    );
+                    return <Divider style={styles.blankDivider} />;
                   }}
                   renderItem={({ item }) => (
                     <CategoryFieldList
                       item={item}
                       handleFieldDelete={handleFieldDelete}
                       handleFieldDetailsUpdate={handleFieldDetailsUpdate}
+                      handleSetTitle={(selectedTitle) => {
+                        setFieldValue("selectedTitle", {
+                          id: selectedTitle.id,
+                          value: selectedTitle.value,
+                        });
+                      }}
+                      selectedTitle={values.selectedTitle}
                       fields={fields}
                     />
                   )}
                 />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    alignContent: "center",
-                    alignItems: "center",
-                    height: 60,
-                    backgroundColor: "white",
-                    paddingHorizontal: 16,
-                  }}
-                >
+                <View style={styles.actionContainer}>
                   <TouchableOpacity
                     onPress={handleBackNav}
-                    style={{
-                      flex: 1,
-                      height: 37,
-                      justifyContent: "center",
-                      alignContent: "center",
-                      alignItems: "center",
-                      backgroundColor: "rgba(0, 0, 0, 0.05)",
-                      borderRadius: 6,
-                    }}
+                    style={styles.actionCancelContainer}
                   >
-                    <Text
-                      style={{
-                        fontWeight: "bold",
-                        color: "rgba(0, 0, 0, 0.4)",
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      Cancel
-                    </Text>
+                    <Text style={styles.actionCancelText}>Cancel</Text>
                   </TouchableOpacity>
-                  <Divider style={{ marginHorizontal: 4 }} />
+                  <Divider style={styles.actionDivider} />
                   <TouchableOpacity
                     onPress={() => handleSubmit()}
-                    style={{
-                      flex: 1,
-                      height: 37,
-                      justifyContent: "center",
-                      alignContent: "center",
-                      alignItems: "center",
-                      backgroundColor:
-                        params?.action === "add"
-                          ? "rgba(18, 179, 61, 0.1)"
-                          : "rgba(0, 76, 255, 0.1)",
-                      borderRadius: 6,
-                    }}
+                    style={[
+                      params?.action === "add"
+                        ? styles.actionAddBG
+                        : styles.actionUpdateBG,
+                      styles.actionPrimaryContainer,
+                    ]}
                   >
                     <Text
-                      style={{
-                        fontWeight: "bold",
-                        color:
-                          params?.action === "add"
-                            ? "rgba(18, 179, 61, 0.8)"
-                            : "rgba(0, 76, 255, 0.8)",
-                        textTransform: "uppercase",
-                      }}
+                      style={[
+                        params?.action === "add"
+                          ? styles.actionAddText
+                          : styles.actionUpdateText,
+                        styles.actionPrimaryText,
+                      ]}
                     >
                       {params?.action === "add" ? "Add" : "Update"}
                     </Text>

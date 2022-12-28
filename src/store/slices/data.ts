@@ -5,15 +5,18 @@ type DataField = {
   name: string;
   value: any;
   type: string;
-  title: string;
 };
 
 export type Data = {
   id: string;
-  createdAt: string;
+  createdAt?: string;
   updatedAt: string;
   categoryId: string;
   fields: DataField[];
+  selectedTitle: {
+    id: string;
+    value: string;
+  };
 };
 
 interface DataState {
@@ -31,6 +34,13 @@ const dataSlice = createSlice({
     insertData: (state: DataState, action: PayloadAction<Data>) => {
       state.data.push(action.payload);
     },
+    updateData: (state: DataState, action: PayloadAction<Data>) => {
+      state.data = state.data.map((item) => {
+        return item.id === action.payload.id
+          ? { ...item, ...action.payload }
+          : item;
+      });
+    },
     deleteADataItem: (state: DataState, action: PayloadAction<string>) => {
       state.data = state.data.filter((item) => item.id !== action.payload);
     },
@@ -42,9 +52,17 @@ const dataSlice = createSlice({
         (item) => item.categoryId !== action.payload
       );
     },
+    clearAllData: (state) => {
+      state.data = [];
+    },
   },
 });
 
-export const { insertData, deleteADataItem, deleteAllCategoryItems } =
-  dataSlice.actions;
+export const {
+  insertData,
+  deleteADataItem,
+  deleteAllCategoryItems,
+  updateData,
+  clearAllData,
+} = dataSlice.actions;
 export default dataSlice.reducer;

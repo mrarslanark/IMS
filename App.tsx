@@ -71,7 +71,7 @@ const DrawerNavigator = () => {
               key={category.id}
               name={category.title}
               component={DyanmicCategory}
-              initialParams={category}
+              initialParams={{ categoryId: category.id }}
             />
           );
         })}

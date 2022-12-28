@@ -5,10 +5,11 @@ import { createSlice } from "@reduxjs/toolkit";
 export type Category = {
   id: string;
   title: string;
-  fields: CategoryFieldType[];
+  fields: CategoryFieldType[] | undefined;
   action?: "add" | "edit";
   createdAt?: string;
   updatedAt: string;
+  selectedTitle: { id: string; value: string };
 };
 
 interface CategoriesState {
@@ -34,7 +35,9 @@ const categoriesSlice = createSlice({
       action: PayloadAction<Category>
     ) => {
       state.categories = state.categories.map((item) => {
-        return action.payload.id === item.id ? action.payload : item;
+        return action.payload.id === item.id
+          ? { ...item, ...action.payload }
+          : item;
       });
     },
     deleteACategory: (

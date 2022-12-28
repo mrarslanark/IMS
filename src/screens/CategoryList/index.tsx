@@ -33,21 +33,9 @@ const CategoryList: React.FC<CategoryListProps> = ({ navigation }) => {
 
   if (categories.length === 0) {
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Image
-          source={images.emptyImage}
-          style={{ width: "40%", height: "40%", resizeMode: "contain" }}
-        />
-        <Text style={{ marginBottom: 24, fontSize: 18, fontWeight: "bold" }}>
-          No Categories Added Yet
-        </Text>
+      <View style={styles.emptyContainer}>
+        <Image source={images.emptyImage} style={styles.emptyImage} />
+        <Text style={styles.emptyTitle}>No Categories Added Yet</Text>
         <Button mode="contained-tonal" onPress={handleNavigation}>
           ADD A CATEGORY
         </Button>
@@ -61,23 +49,13 @@ const CategoryList: React.FC<CategoryListProps> = ({ navigation }) => {
         onPress={handleNavigation}
         style={styles.addButtonContainer}
       >
-        <Text
-          style={{
-            textTransform: "uppercase",
-            fontWeight: "bold",
-            color: "#212121",
-          }}
-        >
-          + Add a Category
-        </Text>
+        <Text style={styles.addText}>+ Add a Category</Text>
       </TouchableOpacity>
 
       <FlatList
         data={categories}
         contentContainerStyle={{ paddingHorizontal: 4, paddingVertical: 16 }}
-        style={{
-          padding: 8,
-        }}
+        style={styles.categoryList}
         renderItem={({ item }) => (
           <CategoryItem
             item={item}
@@ -85,9 +63,7 @@ const CategoryList: React.FC<CategoryListProps> = ({ navigation }) => {
           />
         )}
         ItemSeparatorComponent={() => (
-          <Divider
-            style={{ marginVertical: 6, backgroundColor: "transparent" }}
-          />
+          <Divider style={styles.categoryDivider} />
         )}
       />
     </View>
@@ -125,17 +101,8 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
 
   return (
     <View style={{ padding: 16, backgroundColor: "white", borderRadius: 12 }}>
-      <Text
-        style={{
-          fontSize: 24,
-          color: "black",
-          fontWeight: "bold",
-          textTransform: "uppercase",
-        }}
-      >
-        {item.title}
-      </Text>
-      <Text style={{ color: "gray", fontSize: 12, marginTop: 4 }}>
+      <Text style={styles.title}>{item.title}</Text>
+      <Text style={styles.timestamp}>
         {generateLatestTimestamp(item.createdAt!, item.updatedAt)}
       </Text>
       <View
@@ -145,27 +112,11 @@ const CategoryItem: React.FC<CategoryItemProps> = ({
           marginVertical: 12,
         }}
       >
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Text style={{ fontWeight: "bold", fontSize: 18, marginBottom: 6 }}>
-            {item.fields.length}
-          </Text>
-          <Text style={{ color: "gray", textAlign: "center" }}>Attributes</Text>
+        <View style={styles.infoContainer}>
+          <Text style={styles.countText}>{item?.fields?.length ?? 0}</Text>
+          <Text style={styles.attributeLabel}>Attributes</Text>
         </View>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <View style={styles.totalItemsContainer}>
           <Text style={{ fontWeight: "bold", fontSize: 18, marginBottom: 6 }}>
             {totalItems.length}
           </Text>
