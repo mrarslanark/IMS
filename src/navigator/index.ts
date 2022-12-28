@@ -8,7 +8,7 @@ export type RootDrawerParamList = {
 
 export type RootStackParamList = {
   CategoryList: {} | undefined;
-  AddCategory: {} | undefined;
+  AddCategory: Partial<Category> | undefined;
   DrawerNavigator: {} | undefined;
   DynamicItemAdd: Category | undefined;
 };

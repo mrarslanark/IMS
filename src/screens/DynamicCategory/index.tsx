@@ -8,6 +8,7 @@ import { Category } from "../../store/slices/categories";
 import { FlatList } from "react-native-gesture-handler";
 import { Divider, List } from "react-native-paper";
 import moment from "moment";
+import { TIMESTAMP } from "../../constants/utils";
 
 const DyanmicCategory: React.FC = ({ navigation, route }: any) => {
   const params: Readonly<Category | undefined> = route.params;
@@ -81,7 +82,7 @@ const DyanmicCategory: React.FC = ({ navigation, route }: any) => {
                             ? "Yes"
                             : "No"
                           : item.type === "date"
-                          ? moment(item.value).format("ddd DD YYYY")
+                          ? moment(item.value).format(TIMESTAMP)
                           : item.value}
                       </Text>
                     </View>

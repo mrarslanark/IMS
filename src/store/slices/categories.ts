@@ -6,6 +6,9 @@ export type Category = {
   id: string;
   title: string;
   fields: CategoryFieldType[];
+  action?: "add" | "edit";
+  createdAt?: string;
+  updatedAt: string;
 };
 
 interface CategoriesState {
@@ -26,6 +29,14 @@ const categoriesSlice = createSlice({
     ) => {
       state.categories.push(action.payload);
     },
+    updateACategory: (
+      state: CategoriesState,
+      action: PayloadAction<Category>
+    ) => {
+      state.categories = state.categories.map((item) => {
+        return action.payload.id === item.id ? action.payload : item;
+      });
+    },
     deleteACategory: (
       state: CategoriesState,
       actions: PayloadAction<string>
@@ -37,5 +48,6 @@ const categoriesSlice = createSlice({
   },
 });
 
-export const { insertCategory, deleteACategory } = categoriesSlice.actions;
+export const { insertCategory, deleteACategory, updateACategory } =
+  categoriesSlice.actions;
 export default categoriesSlice.reducer;

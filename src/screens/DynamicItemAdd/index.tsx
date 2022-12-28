@@ -11,6 +11,7 @@ import { Data, insertData } from "../../store/slices/data";
 import { CategoryFieldType } from "../AddCategory/CategoryFieldList";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store";
+import { TIMESTAMP } from "../../constants/utils";
 
 const DynamicItemAdd: React.FC<DynamicItemAddProps> = ({
   navigation,
@@ -195,7 +196,7 @@ const DateType = ({ item, updateState }: any) => {
       >
         <Text style={{ fontSize: 14, fontWeight: "600" }}>{item.name}</Text>
         <Button mode="text" icon={"calendar"} onPress={togglePicker}>
-          {date ? moment(date).format("ddd DD YYYY") : "Pick a Date"}
+          {date ? moment(date).format(TIMESTAMP) : "Pick a Date"}
         </Button>
       </View>
 
